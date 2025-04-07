@@ -2,7 +2,7 @@ package main
 
 import (
 	database "github.com/AVtheking/ticketo/db"
-	"github.com/AVtheking/ticketo/routers"
+	routes "github.com/AVtheking/ticketo/routers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +17,7 @@ func main() {
 
 	apiRoutes := router.Group("/api/v1")
 	{
-		routers.CinemaRouter(apiRoutes)
+		routes.TheaterRoutes(db, apiRoutes)
 	}
 
 	router.Run(":8080")
