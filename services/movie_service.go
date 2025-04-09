@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/AVtheking/ticketo/models"
 	"gorm.io/gorm"
 )
@@ -13,7 +15,16 @@ func NewMovieService(db *gorm.DB) *MovieService {
 	return &MovieService{db: db}
 }
 
-func (s *MovieService) GetMovies(page, pageSize int) ([]models.Movie, error) {
+func (s *MovieService) CheckifMovieExists(id string) (bool, error) {
+	var existingMovie models.Movie
+	if err := s.db.First(&existingMovie, "id = ?", id).Error; err != nil {
+		return false, err
+	}
+
+	return existingMovie.ID != 0, nil
+}
+
+func (s *MovieService) GetMovies(page int, pageSize int) ([]models.Movie, error) {
 	var movies []models.Movie
 	var totalCount int64
 
@@ -42,7 +53,15 @@ func (s *MovieService) GetMovieById(id string) (*models.Movie, error) {
 }
 
 func (s *MovieService) CreateMovie(movie *models.Movie) (*models.Movie, error) {
-	result := s.db.Create(movie)
+	var existingMovie models.Movie
+	result := s.db.Where("title = ? AND description = ? AND year = ? AND cast = ?",
+		movie.Title, movie.Description, movie.Year, movie.Cast).First(&existingMovie)
+
+	if result.Error == nil {
+		return nil, errors.New("movie with same details already exists")
+	}
+
+	result = s.db.Create(movie)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -51,6 +70,12 @@ func (s *MovieService) CreateMovie(movie *models.Movie) (*models.Movie, error) {
 }
 
 func (s *MovieService) UpdateMovie(id string, movie *models.Movie) (*models.Movie, error) {
+	var existingMovie models.Movie
+
+	if err := s.db.First(&existingMovie, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+
 	result := s.db.Model(&models.Movie{}).Where("id = ?", id).Updates(movie)
 	if result.Error != nil {
 		return nil, result.Error
@@ -60,6 +85,11 @@ func (s *MovieService) UpdateMovie(id string, movie *models.Movie) (*models.Movi
 }
 
 func (s *MovieService) DeleteMovie(id string) error {
+	_, err := s.CheckifMovieExists(id)
+	if err != nil {
+		return err
+	}
+
 	result := s.db.Delete(&models.Movie{}, id)
 	if result.Error != nil {
 		return result.Error
