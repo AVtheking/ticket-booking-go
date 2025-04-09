@@ -13,5 +13,7 @@ func TheaterRoutes(db *gorm.DB, routes *gin.RouterGroup) {
 	theaterRoutes := routes.Group("/theaters")
 	{
 		theaterRoutes.GET("", theaterController.GetTheaters)
+		theaterRoutes.GET("/:id", theaterController.GetTheaterByID)
+		theaterRoutes.POST("", theaterController.CreateTheater)
 	}
 }

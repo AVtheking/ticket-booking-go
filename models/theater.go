@@ -35,6 +35,7 @@ type Seat struct {
 	TheaterID       uuid.UUID `json:"theater_id" gorm:"column:theater_id"`
 	TheaterScreenID uuid.UUID `json:"theater_screen_id" gorm:"column:theater_screen_id"`
 	Row             int       `json:"row" gorm:"column:row"`
+	Price           float64   `json:"price" gorm:"column:price"`
 	Number          int       `json:"number" gorm:"column:number"`
 	SeatType        SeatType  `json:"seat_type" gorm:"column:seat_type"`
 }

@@ -18,7 +18,7 @@ func NewTheaterController(db *gorm.DB) *TheaterController {
 	}
 }
 
-func (config *TheaterController) GetTheater(ctx *gin.Context) {
+func (config *TheaterController) GetTheaterByID(ctx *gin.Context) {
 	theaterId := ctx.Param("id")
 	var theater models.Theater
 
@@ -46,4 +46,21 @@ func (c *TheaterController) GetTheaters(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, theaters)
+}
+
+func (c *TheaterController) CreateTheater(ctx *gin.Context) {
+	var theater models.Theater
+
+	if err := ctx.ShouldBindJSON(&theater); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := c.db.Create(&theater).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+	}
 }

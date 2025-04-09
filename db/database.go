@@ -14,10 +14,10 @@ func InitDB() *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&models.Theater{})
-	db.AutoMigrate(&models.TheaterScreen{})
-	db.AutoMigrate(&models.Seat{})
 	db.AutoMigrate(&models.Movie{})
+	db.AutoMigrate(&models.ShowTime{})
+	db.AutoMigrate(&models.Reservation{})
+	db.AutoMigrate(&models.User{})
 
 	return db
 }
