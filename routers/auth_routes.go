@@ -7,22 +7,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRoutes struct {
+type AuthRoutes struct {
 	db *gorm.DB
 }
 
-func NewUserRoutes(db *gorm.DB) *UserRoutes {
-	return &UserRoutes{
+func NewAuthRoutes(db *gorm.DB) *AuthRoutes {
+	return &AuthRoutes{
 		db: db,
 	}
 }
 
-func (r *UserRoutes) RegisterRoutes(routes *gin.RouterGroup) {
+func (r *AuthRoutes) RegisterRoutes(routes *gin.RouterGroup) {
 	authService := services.NewAuthService(r.db)
 	authController := controllers.NewAuthController(authService)
-	userRoutes := routes.Group("/users")
+	authRoutes := routes.Group("/auth")
 	{
-		userRoutes.POST("/register", authController.RegisterUser)
-		userRoutes.POST("/login", authController.LoginUser)
+		authRoutes.POST("/register", authController.RegisterUser)
+		authRoutes.POST("/login", authController.LoginUser)
 	}
 }

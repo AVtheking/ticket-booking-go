@@ -16,7 +16,7 @@ func NewMovieRoutes(db *gorm.DB) *MovieRoutes {
 	return &MovieRoutes{db: db}
 }
 
-func (r *MovieRoutes) RegisterRoutes(router *gin.Engine) {
+func (r *MovieRoutes) RegisterRoutes(router *gin.RouterGroup) {
 	movieService := services.NewMovieService(r.db)
 	movieController := controllers.NewMovieController(movieService)
 	protectedMovieRoutes := router.Group("/movies")

@@ -16,9 +16,14 @@ func main() {
 	})
 
 	apiRoutes := router.Group("/api/v1")
-	{
-		routes.TheaterRoutes(db, apiRoutes)
-	}
+	movieRoutes := routes.NewMovieRoutes(db)
+	showtimeRoutes := routes.NewShowTimeRoutes(db)
+	reservationRoutes := routes.NewReservationRoutes(db)
+	authRoutes := routes.NewAuthRoutes(db)
+	movieRoutes.RegisterRoutes(apiRoutes)
+	showtimeRoutes.RegisterRoutes(apiRoutes)
+	reservationRoutes.RegisterRoutes(apiRoutes)
+	authRoutes.RegisterRoutes(apiRoutes)
 
 	router.Run(":8080")
 
